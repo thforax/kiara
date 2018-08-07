@@ -4,7 +4,7 @@
 /public/tmp/*
 /public/*
 /vendor/*
-!/vendor/framework/framework/*
+!/vendor/framework/
 
 # OS generated files #
 ######################
