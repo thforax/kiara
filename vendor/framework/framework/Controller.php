@@ -8,7 +8,7 @@
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
  */
-namespace Pabana;
+namespace Framework;
 
 /**
  * Controller class

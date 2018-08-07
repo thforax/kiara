@@ -10,7 +10,8 @@
  */
 namespace Framework;
 
-use Pabana\Router;
+// Load Router class of lite framework
+use Framework\Router;
 
 /**
  * Core class
@@ -42,7 +43,7 @@ class Core
             throw new \Exception('Bootstrap "\App\Bootstrap" doesn\' exist.');
             return false;
         }
-        $bootstrap = new $bootstrapNamespace();
+        $bootstrap = new \App\Bootstrap();
         if (!method_exists($bootstrap, 'initialize')) {
             $errorMessage = 'initialize() method isn\'t available in Bootstrap "\App\Bootstrap".<br />';
             throw new \Exception($errorMessage);

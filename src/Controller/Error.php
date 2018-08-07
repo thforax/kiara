@@ -14,7 +14,7 @@ namespace App\Controller;
 /**
  * Controller Error
  */
-class Error extends Framework\Controller
+class Error extends \Framework\Controller
 {
     /**
      * Action index

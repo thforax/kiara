@@ -35,7 +35,7 @@ class Database
      * @param   array $optionList Option array.
      * @return  bool True if success or false.
      */
-    public function connect($dsn, $user, $password, $optionList)
+    public static function connect($dsn, $user, $password, $optionList)
     {
         try {
             self::$pdo = new \PDO(
@@ -57,7 +57,7 @@ class Database
      * @since   1.0
      * @return  \PDO Get PDO object
      */
-    public function getPdo()
+    public static function getPdo()
     {
         return self::$pdo;
     }

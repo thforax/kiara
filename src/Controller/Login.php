@@ -14,7 +14,7 @@ namespace App\Controller;
 /**
  * Controller Login
  */
-class Login extends Framework\Controller
+class Login extends \Framework\Controller
 {
     /**
      * Action index

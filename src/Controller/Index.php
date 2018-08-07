@@ -14,7 +14,7 @@ namespace App\Controller;
 /**
  * Controller Index
  */
-class Index extends Framework\Controller
+class Index extends \Framework\Controller
 {
     /**
      * Action index

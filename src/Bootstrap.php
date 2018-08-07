@@ -40,7 +40,7 @@ class Bootstrap
         }
         // Do connection to Database
         $connectionOption = array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
         $connectionResult = Database::connect(
             'mysql:host=localhost;dbname=kiara',
