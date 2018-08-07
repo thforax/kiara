@@ -94,6 +94,17 @@ class Controller
      * @since   1.0
      * @return  void
      */
+    final public function enableView($enable)
+    {
+        $this->viewEnable = $enable;
+    }
+
+    /**
+     * Set var to view
+     *
+     * @since   1.0
+     * @return  void
+     */
     final public function setVar($name, $value)
     {
         $this->varList[$name] = $value;
