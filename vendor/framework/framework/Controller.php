@@ -29,6 +29,8 @@ class Controller
      */
     private $viewEnable = true;
 
+    private $varList = array();
+
     /**
      * Constructor
      *
@@ -75,11 +77,25 @@ class Controller
                 trigger_error('View file "' . $viewPath . '" doesn\'t exist.', E_USER_ERROR);
                 return false;
             }
+            foreach ($this->varList as $varName => $varValue) {
+                ${$varName} = $varValue;
+            }
             ob_start();
             require($viewPath);
             echo PHP_EOL;
             $bodyContent .= ob_get_clean();
         }
         return $bodyContent;
+    }
+
+    /**
+     * Set var to view
+     *
+     * @since   1.0
+     * @return  void
+     */
+    final public function setVar($name, $value)
+    {
+        $this->varList[$name] = $value;
     }
 }
