@@ -28,6 +28,11 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Se connecter</button>
       </form>
     </div>
+    <div id="spinner-block">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20"></circle>
+        </svg>
+    </div>
     <script src="/lib/jquery/js/jquery-3.2.1.min.js"></script>
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="/lib/noty/js/jquery.noty.packaged.min.js"></script>
