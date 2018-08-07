@@ -52,25 +52,50 @@ class Login extends \Framework\Controller
                 )
             )
         );
-        // Initialise un objet de test du formulaire par rapport aux valeur passer en POST
         $formValidation = new Form($formRule, $_POST);
-        // Prepare les données de post pour leur inclusion en bdd
         $formData = $formValidation->prepare();
-        // Test le formulaire
         $formError = $formValidation->validate();
-        // Test si le formulaire comporte une erreur
         if ($formError !== true) {
-            // Envoi une requete JSON d'erreur car une erreur a été retourner lors du test du formulaire
             $json->setSuccess(false);
             $errorCode = strtoupper($formError['name'] . '_' . $formError['error']);
             $json->setError($errorCode, $formError['message']);
             $json->send();
             return false;
         }
+        $userModel = new User();
+        $user = $userModel->getByLogin($formData['login']);
+        if ($user === false) {
+            $json->setSuccess(false);
+            $json->setError('USER_UNKNOW', 'Votre identifiant / mot de passe est incorrecte.');
+            $json->send();
+            return false;
+        }
+        if (!password_verify($formData['password'], $user['usr_password'])) {
+            $json->setSuccess(false);
+            $json->setError('USER_UNKNOW', 'Votre identifiant / mot de passe est incorrecte.');
+            $json->send();
+            return false;
+        }
+        $result = $userModel->updateConnection($user['usr_id']);
+        if ($result === false) {
+            $json->setSuccess(false);
+            $json->setError('USER_CONNEXION', 'Une erreur est survenue durant votre connexion.');
+            $json->send();
+            return false;
+        }
+        $_SESSION['user']['id'] = $user['usr_id'];
+        $_SESSION['user']['login'] = $formData['login'];
         $json->setSuccess(true);
         $json->send();
         return true;
-        /*$userModel = new User();
-        $userModel->getByUsername();*/
+    }
+
+    public function logout()
+    {
+        $this->enableView(false);
+        unset($_SESSION);
+        session_destroy();
+        header('Location: /login/index/error/disconnected');
+        exit();
     }
 }
