@@ -24,21 +24,7 @@
               </div>
             </div>
 
-            <div class="row sideBar">
-                <?php
-                foreach ($userActiveList as $user) { ?>
-              <div class="row sideBar-body">
-                <div class="col-sm-12 col-xs-12 sideBar-main">
-                  <div class="row">
-                    <div class="col-sm-12 col-xs-12 sideBar-name">
-                      <span class="name-meta"><?php echo $user['usr_login']; ?>
-                    </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                <?php } ?>
-            </div>
+            <div class="row sideBar"></div>
           </div>
         </div>
 
@@ -57,39 +43,6 @@
                 </a>
               </div>
             </div>
-            <?php
-            foreach ($messageList as $message) {
-                $class = 'receiver';
-                if ($message['usr_id'] == $_SESSION['user']['id']) {
-                    $class = 'sender';
-                }
-                ?>
-            <div class="row message-body">
-              <div class="col-sm-12 message-main-<?php echo $class; ?>">
-                <div class="<?php echo $class; ?>">
-                  <div class="message-text">
-                   <?php echo nl2br($message['msg_content']); ?>
-                  </div>
-                  <span class="message-time pull-right">
-                    <?php echo $message['usr_login']; ?> -
-                    <?php echo $message['msg_date']; ?>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <?php } ?>
-            <!--<div class="row message-body">
-              <div class="col-sm-12 message-main-sender">
-                <div class="sender">
-                  <div class="message-text">
-                    I am doing nothing man!
-                  </div>
-                  <span class="message-time pull-right">
-                    Sun
-                  </span>
-                </div>
-              </div>
-            </div>-->
           </div>
 
           <div class="row reply">

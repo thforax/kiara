@@ -11,8 +11,6 @@
  */
 namespace App\Model;
 
-use Framework\Database;
-
 /**
  * Model User
  */
@@ -22,7 +20,7 @@ class User
 
     public function __construct()
     {
-        $this->pdo = Database::getPdo();
+        $this->pdo = new \PDO('mysql:host=localhost;dbname=kiara', 'kiara', 'k6RLi5oKgfO6nwGY', array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
     }
 
     public function getByLogin($login)
@@ -57,11 +55,9 @@ class User
         FROM t_user
         WHERE usr_date_connection >= DATE_SUB(NOW(), INTERVAL 20 MINUTE)";
         $statement = $this->pdo->prepare($select);
+        $statement->bindParam(':id', $_SESSION['user']['id'], \PDO::PARAM_INT);
         if ($statement->execute()) {
-            $userList = $statement->fetchAll();
-            if (!empty($userList)) {
-                return $userList;
-            }
+            return $statement->fetchAll();
         }
         return false;
     }

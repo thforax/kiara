@@ -14,7 +14,7 @@ namespace App\Controller;
 /**
  * Controller Error
  */
-class Error extends \Framework\Controller
+class Error
 {
     /**
      * Action index
@@ -72,13 +72,8 @@ class Error extends \Framework\Controller
             header($httpMessage);
             return false;
         } else { // Else it's a normal HTTP request
-            // Send code of error to view
-            $this->setVar('code', $errorCode);
-            // Send title of error to view
-            $this->setVar('title', $codeList[$errorCode]['title']);
-            // Send text of error to view
-            $this->setVar('text', $codeList[$errorCode]['text']);
-            return true;
+            // Load view
+            require(APP_VIEW . DS . 'Error' . DS . 'index.php');
         }
     }
 }

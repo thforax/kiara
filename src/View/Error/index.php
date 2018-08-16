@@ -7,7 +7,7 @@
     <meta name="description" content="Sample chat with mvc">
     <meta name="author" content="Thibault Forax">
     <link rel="icon" href="/img/favicon.ico">
-    <title>Kiara - Erreur <?php echo $_GET['code']; ?></title>
+    <title>Kiara - Erreur <?php echo $errorCode; ?></title>
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/formvalidation/css/formValidation.min.css" rel="stylesheet">
     <link href="/css/kiara.css" rel="stylesheet">
@@ -15,10 +15,10 @@
   </head>
   <body>
     <div class="container">
-        <h1 class="text-primary text-center"><?php echo $code; ?></h1>
-        <h2 class="text-grey text-center"><?php echo $title; ?></h2>
+        <h1 class="text-primary text-center"><?php echo $errorCode; ?></h1>
+        <h2 class="text-grey text-center"><?php echo $codeList[$errorCode]['title']; ?></h2>
         <div class="panel panel-padding-20 margin-top-20 text-center">
-            <span class="text-primary text-big">Désolé !</span> <?php echo $text; ?>
+            <span class="text-primary text-big">Désolé !</span> <?php echo $codeList[$errorCode]['text']; ?>
             <br><br>
             <a href="/index" class="btn btn-action btn-action-primary no-margin">Retour à l'accueil</a>
         </div>

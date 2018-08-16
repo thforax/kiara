@@ -11,8 +11,6 @@
  */
 namespace App\Model;
 
-use Framework\Database;
-
 /**
  * Model Message
  */
@@ -22,7 +20,7 @@ class Message
 
     public function __construct()
     {
-        $this->pdo = Database::getPdo();
+        $this->pdo = $this->pdo = new \PDO('mysql:host=localhost;dbname=kiara', 'kiara', 'k6RLi5oKgfO6nwGY', array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
     }
 
     public function getLast()
@@ -32,7 +30,7 @@ class Message
         FROM t_message MSG
         LEFT JOIN t_user USR ON MSG.usr_id = USR.usr_id
         ORDER BY MSG.msg_date DESC
-        LIMIT 0, 20";
+        LIMIT 0, 10";
         $statement = $this->pdo->prepare($select);
         if ($statement->execute()) {
             $message = $statement->fetchAll();
