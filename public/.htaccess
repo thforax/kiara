@@ -1,0 +1,11 @@
+# Apache URL rewriting
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
+
+# PHP flags
+php_value post_max_size 32M
+php_value upload_max_filesize 16M

@@ -1,0 +1,59 @@
+h2 {
+  margin-bottom: 10px;
+}
+
+#spinner-block {
+  display: none; }
+
+#spinner-block.open {
+  z-index: 999999;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  top: 0; }
+  #spinner-block.open > .circular {
+    animation: spinner 2s linear infinite;
+    height: 8em;
+    transform-origin: center center;
+    width: 8em;
+    margin: auto; }
+    #spinner-block.open > .circular > .path {
+      animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      fill: none; }
+
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0; }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px; }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px; } }
+
+@keyframes color {
+  100%,
+  0% {
+    stroke: #09afdf; }
+  40% {
+    stroke: #7460ee; }
+  66% {
+    stroke: #26c6da; }
+  80%,
+  90% {
+    stroke: #74B632; } }
