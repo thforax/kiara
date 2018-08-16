@@ -18,11 +18,21 @@ class User
 {
     public $pdo;
 
+    /**
+     * Init PDO object
+     *
+     * @since   1.0
+     */
     public function __construct()
     {
         $this->pdo = new \PDO('mysql:host=localhost;dbname=kiara', 'kiara', 'k6RLi5oKgfO6nwGY', array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
     }
 
+    /**
+     * Get user information from his login
+     *
+     * @since   1.0
+     */
     public function getByLogin($login)
     {
         $select = "SELECT usr_id, usr_password
@@ -39,6 +49,11 @@ class User
         return false;
     }
 
+    /**
+     * Update connection date
+     *
+     * @since   1.0
+     */
     public function updateConnection($id)
     {
         $select = "UPDATE t_user
@@ -49,11 +64,17 @@ class User
         return $statement->execute();
     }
 
+    /**
+     * Get list of active user
+     *
+     * @since   1.0
+     */
     public function getActive()
     {
         $select = "SELECT usr_id, usr_login
         FROM t_user
-        WHERE usr_date_connection >= DATE_SUB(NOW(), INTERVAL 20 MINUTE)";
+        WHERE usr_date_connection >= DATE_SUB(NOW(), INTERVAL 20 MINUTE)
+        AND usr_id != :id";
         $statement = $this->pdo->prepare($select);
         $statement->bindParam(':id', $_SESSION['user']['id'], \PDO::PARAM_INT);
         if ($statement->execute()) {

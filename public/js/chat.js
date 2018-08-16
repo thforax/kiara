@@ -1,14 +1,20 @@
+// When page is loaded
 $( document ).ready(function() {
+    // Refresh user list
     refreshUserList();
+    // Refresh message list
     refreshMessageList();
+    // Create interval to refresh user
     var refreshUserListInterval = setInterval(function() {
         refreshUserList();
     }, 30000);
+    // Create interval to refresh message
     var refreshMessageListInterval = setInterval(function() {
         refreshMessageList();
     }, 10000);
 });
 
+// Function to refresh user list
 function refreshUserList() {
     // Send ajax request
     $.ajax({
@@ -25,7 +31,9 @@ function refreshUserList() {
                 timeout: 10000
             });
         } else { // If Json return success
+            // Delete user list
             $('.inbox_chat').html('');
+            // For each user add to user list
             $.each(oJson.data, function( index, element ) {
                 var oHtml = '<div class="chat_list">';
                 oHtml += '<div class="chat_people">';
@@ -42,7 +50,9 @@ function refreshUserList() {
     });
 }
 
+//  Function to refresh message list
 function refreshMessageList() {
+    // Get last message id
     var messageId = $('.msg_history').children().last().data('id');
     if (messageId == undefined) {
         messageId = 0;
@@ -63,6 +73,7 @@ function refreshMessageList() {
             });
         } else { // If Json return success
             var addTrigger = false;
+            // For each message
             $.each(oJson.data, function( index, element ) {
                 addTrigger = true;
                 var class2 = 'sent';
@@ -83,12 +94,14 @@ function refreshMessageList() {
                     $('.msg_history').append(oHtml);
                 }
             });
+            // If no message can load
             var firstMessageId = $('.msg_history').children().first().data('id');
             if (firstMessageId == 1) {
                 $('.div-previous').hide();
             } else {
                 $('.div-previous').show();
             }
+            // If a message was add scroll to bottom
             if (addTrigger == true) {
                 var chatHeight = $('.msg_history')[0].scrollHeight;
                 $('.msg_history').scrollTop(chatHeight);
@@ -97,7 +110,9 @@ function refreshMessageList() {
     });
 }
 
+// Get older message
 function getOlderMessage() {
+    // Get older message id
     var messageId = $('.msg_history').children().first().data('id');
     // Send ajax request
     $.ajax({
@@ -135,15 +150,18 @@ function getOlderMessage() {
             } else {
                 $('.div-previous').show();
             }
+            // Scroll to top
             $('.msg_history').scrollTop(0);
         }
     });
 }
 
+// On click on load previous message
 $("#previous-message").click(function() {
     getOlderMessage();
 });
 
+// When message was submit
 $("#submit-message").click(function() {
     // Open a spinner for wait
     openSpinner();

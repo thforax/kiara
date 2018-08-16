@@ -64,6 +64,17 @@ class Index
             $returnData[$index]['login'] = $userActive['usr_login'];
             $index++;
         }
+        // Update connection date (for user list)
+        $result = $userModel->updateConnection($_SESSION['user']['id']);
+        // If error return json error message
+        if ($result === false) {
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'USER_CONNEXION';
+            $returnArray['error']['message'] = 'Une erreur est survenue durant la mise a jour de votre date de connexion.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
+        }
         // Return json success with data array
         $returnArray['success'] = true;
         $returnArray['data'] = $returnData;
