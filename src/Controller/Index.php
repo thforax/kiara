@@ -26,20 +26,28 @@ class Index
      */
     public function index()
     {
-        /*$userModel = new User();
-        $userActiveList = $userModel->getActive();
-        $messageModel = new Message();
-        $messageList = $messageModel->getLast();*/
         // Load view
         require(APP_VIEW . DS . 'Index' . DS . 'index.php');
     }
 
+    /**
+     * Action userList
+     *
+     * Load user list and return it in JSON object for ajax
+     *
+     * @since   1.0
+     */
     public function userList()
     {
+        // Create return array
         $returnArray = array();
+        // Load User model
         $userModel = new User();
+        // Get active user list
         $userActiveList = $userModel->getActive();
+        // If return is an error
         if ($userActiveList === false) {
+            // Send JSON error return
             $returnArray['success'] = false;
             $returnArray['error']['code'] = 'USER_LIST';
             $returnArray['error']['message'] = 'Erreur lors de la récupération des utilisateurs.';
@@ -47,13 +55,16 @@ class Index
             echo json_encode($returnArray);
             exit();
         }
+        // Create return data array
         $returnData = array();
         $index = 0;
+        // Foreach user add to data array
         foreach ($userActiveList as $userActive) {
             $returnData[$index]['id'] = $userActive['usr_id'];
             $returnData[$index]['login'] = $userActive['usr_login'];
             $index++;
         }
+        // Return json success with data array
         $returnArray['success'] = true;
         $returnArray['data'] = $returnData;
         header('Content-Type: application/json');
@@ -61,19 +72,35 @@ class Index
         exit();
     }
 
+    /**
+     * Action messageList
+     *
+     * Load message list and return it in JSON object for ajax
+     *
+     * @since   1.0
+     */
     public function messageList()
     {
+        // Create a return array for Json
         $returnArray = array();
+        // Get last or first message id
         $messageId = $_GET['id'];
+        // Get type a get (before or after)
         $getType = $_GET['type'];
+        // Init Message model
         $messageModel = new Message();
+        // If message id is 0 (so first get of message)
         if ($messageId == 0) {
+            // Get last message
             $messageList = $messageModel->getLast();
         } else if ($getType == 'before') {
+            // Get before message id message
             $messageList = $messageModel->getBefore($messageId);
         } else if ($getType == 'after') {
+            // Get all message after id
             $messageList = $messageModel->getAfter($messageId);
         }
+        // If message list return false return json error
         if ($messageList === false) {
             $returnArray['success'] = false;
             $returnArray['error']['code'] = 'MESSAGE_LIST';
@@ -82,10 +109,13 @@ class Index
             echo json_encode($returnArray);
             exit();
         }
+        // Create data array for json
         $returnData = array();
         $index = 0;
+        // Foreach message move to data array
         foreach ($messageList as $message) {
             $returnData[$index]['id'] = $message['msg_id'];
+            // Class is for css style of div
             $returnData[$index]['class'] = 'incoming';
             if ($message['usr_id'] == $_SESSION['user']['id']) {
                 $returnData[$index]['class'] = 'outgoing';
@@ -95,6 +125,7 @@ class Index
             $returnData[$index]['date'] = $message['msg_date'];
             $index++;
         }
+        // Return formeted data in Json
         $returnArray['success'] = true;
         $returnArray['data'] = $returnData;
         header('Content-Type: application/json');
@@ -103,22 +134,18 @@ class Index
     }
 
     /**
-     * Action index
+     * Action post
+     *
+     * Post a new message
      *
      * @since   1.0
      */
     public function post()
     {
+        // Create return array for json
         $returnArray = array();
-        if (!isset($_POST['message'])) {
-            $returnArray['success'] = false;
-            $returnArray['error']['code'] = 'POST_FORM';
-            $returnArray['error']['message'] = 'Erreur lors de la transmission du message.';
-            header('Content-Type: application/json');
-            echo json_encode($returnArray);
-            exit();
-        }
-        if (empty($_POST['message'])) {
+        // If message isn't send by post or is empty return error
+        if (!isset($_POST['message']) || empty($_POST['message'])) {
             $returnArray['success'] = false;
             $returnArray['error']['code'] = 'MSG_EMPTY';
             $returnArray['error']['message'] = 'Veuillez indiquer un message.';
@@ -126,12 +153,16 @@ class Index
             echo json_encode($returnArray);
             exit();
         }
+        // Secure message content
         $message = htmlentities($_POST['message']);
+        // Load Message model
         $messageModel = new Message();
+        // Call post method
         $result = $messageModel->post(
             $_SESSION['user']['id'],
             $message
         );
+        // If add failed return json error message
         if ($result === false) {
             $returnArray['success'] = false;
             $returnArray['error']['code'] = 'POST_SQL';
@@ -140,6 +171,7 @@ class Index
             echo json_encode($returnArray);
             exit();
         }
+        // Else return success message
         $returnArray['success'] = true;
         header('Content-Type: application/json');
         echo json_encode($returnArray);

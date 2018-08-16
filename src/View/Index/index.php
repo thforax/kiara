@@ -31,8 +31,10 @@
           <div class="msg_history"></div>
           <div class="type_msg">
             <div class="input_msg_write">
-              <input type="text" class="write_msg" placeholder="Type a message" />
-              <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                <form id="form-message">
+                  <input type="text" name="message" id="input-message" class="write_msg" placeholder="Ecrire un message" />
+                  <button class="msg_send_btn" id="submit-message" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+              </form>
             </div>
           </div>
         </div>

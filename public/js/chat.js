@@ -144,7 +144,7 @@ $("#previous-message").click(function() {
     getOlderMessage();
 });
 
-$("#input-message").click(function() {
+$("#submit-message").click(function() {
     // Open a spinner for wait
     openSpinner();
     // Send ajax request
@@ -163,7 +163,8 @@ $("#input-message").click(function() {
                 timeout: 10000
             });
         } else { // If Json return success
-            document.location.href = '/index';
+            refreshMessageList();
+            $('#input-message').val('');
         }
     }).always(function(oXHR, sStatus, oXHROrError) {
         closeSpinner();
