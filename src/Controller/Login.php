@@ -12,15 +12,11 @@
 namespace App\Controller;
 
 use \App\Model\User;
-// Class for manage data from a form
-use \Framework\Form;
-// Class for generate a json message
-use \Framework\Json;
 
 /**
  * Controller Login
  */
-class Login extends \Framework\Controller
+class Login
 {
     /**
      * Action index
@@ -29,6 +25,8 @@ class Login extends \Framework\Controller
      */
     public function index()
     {
+        // Load view
+        require(APP_VIEW . DS . 'Login' . DS . 'index.php');
     }
 
     /**
@@ -38,61 +36,77 @@ class Login extends \Framework\Controller
      */
     public function login()
     {
-        $this->enableView(false);
-        $json = new Json();
-        // Define form test
-        $formRule = array(
-            'login' => array(
-                'notEmpty' => array(
-                    'message' => 'Votre identifiant n\'est pas renseignée.'
-                )
-            ), 'password' => array(
-                'notEmpty' => array(
-                    'message' => 'Votre mot de passe n\'est pas renseigné.'
-                )
-            )
-        );
-        $formValidation = new Form($formRule, $_POST);
-        $formData = $formValidation->prepare();
-        $formError = $formValidation->validate();
-        if ($formError !== true) {
-            $json->setSuccess(false);
-            $errorCode = strtoupper($formError['name'] . '_' . $formError['error']);
-            $json->setError($errorCode, $formError['message']);
-            $json->send();
-            return false;
+        // Create return array for json
+        $returnArray = array();
+        // Check if login value is send and not empty
+        if (!isset($_POST['login']) || empty($_POST['login'])) {
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'LOGIN';
+            $returnArray['error']['message'] = 'Veuillez renseigner votre identifiant.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
         }
+        // check if password is send and not empty
+        if (!isset($_POST['password']) || empty($_POST['password'])) {
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'PASSWORD';
+            $returnArray['error']['message'] = 'Veuillez renseigner votre mot de passe.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
+        }
+        // Load User model
         $userModel = new User();
-        $user = $userModel->getByLogin($formData['login']);
+        // Try to get user by his login
+        $user = $userModel->getByLogin($_POST['login']);
+        // If false user login doesn't exist
         if ($user === false) {
-            $json->setSuccess(false);
-            $json->setError('USER_UNKNOW', 'Votre identifiant / mot de passe est incorrecte.');
-            $json->send();
-            return false;
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'USER_UNKNOW';
+            $returnArray['error']['message'] = 'Votre identifiant / mot de passe est incorrecte.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
         }
-        if (!password_verify($formData['password'], $user['usr_password'])) {
-            $json->setSuccess(false);
-            $json->setError('USER_UNKNOW', 'Votre identifiant / mot de passe est incorrecte.');
-            $json->send();
-            return false;
+        // Check if password hash is same
+        if (!password_verify($_POST['password'], $user['usr_password'])) {
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'USER_UNKNOW';
+            $returnArray['error']['message'] = 'Votre identifiant / mot de passe est incorrecte.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
         }
+        // Update connection date (for user list)
         $result = $userModel->updateConnection($user['usr_id']);
+        // If error return json error message
         if ($result === false) {
-            $json->setSuccess(false);
-            $json->setError('USER_CONNEXION', 'Une erreur est survenue durant votre connexion.');
-            $json->send();
-            return false;
+            $returnArray['success'] = false;
+            $returnArray['error']['code'] = 'USER_CONNEXION';
+            $returnArray['error']['message'] = 'Une erreur est survenue durant votre connexion.';
+            header('Content-Type: application/json');
+            echo json_encode($returnArray);
+            exit();
         }
+        // Put information about user in session variable
         $_SESSION['user']['id'] = $user['usr_id'];
-        $_SESSION['user']['login'] = $formData['login'];
-        $json->setSuccess(true);
-        $json->send();
-        return true;
+        $_SESSION['user']['login'] = $_POST['login'];
+        // Return json success
+        $returnArray['success'] = true;
+        header('Content-Type: application/json');
+        echo json_encode($returnArray);
+        exit();
     }
 
+    /**
+     * Action logout
+     *
+     * @since   1.0
+     */
     public function logout()
     {
-        $this->enableView(false);
+        // Destroy session
         unset($_SESSION);
         session_destroy();
         header('Location: /login/index/error/disconnected');

@@ -1,10 +1,6 @@
 # Kiara specific files #
 ##########################
-/data/tmp/*
-/public/tmp/*
-/public/*
 /vendor/*
-!/vendor/framework/
 
 # OS generated files #
 ######################
