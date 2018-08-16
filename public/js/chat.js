@@ -1,7 +1,12 @@
 $( document ).ready(function() {
+    refreshUserList();
+    refreshMessageList();
     var refreshUserListInterval = setInterval(function() {
         refreshUserList();
-    }, 30000)
+    }, 30000);
+    var refreshMessageListInterval = setInterval(function() {
+        refreshMessageList();
+    }, 10000);
 });
 
 function refreshUserList() {
@@ -20,28 +25,83 @@ function refreshUserList() {
                 timeout: 10000
             });
         } else { // If Json return success
-            $('.row .sideBar').html('');
+            $('.inbox_chat').html('');
             $.each(oJson.data, function( index, element ) {
-                var oHtml = '<div class="row sideBar-body">';
-                oHtml += '<div class="col-sm-12 col-xs-12 sideBar-main">';
-                oHtml += '<div class="row">';
-                oHtml += '<div class="col-sm-12 col-xs-12 sideBar-name">';
-                oHtml += '<span class="name-meta">' + element.login + '</span>';
+                var oHtml = '<div class="chat_list">';
+                oHtml += '<div class="chat_people">';
+                oHtml += '<div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>';
+                oHtml += '<div class="chat_ib">';
+                oHtml += '<h5>' + element.login + ' <span class="chat_date">Dec 25</span></h5>';
+                oHtml += '<p>Test</p>';
                 oHtml += '</div>';
                 oHtml += '</div>';
                 oHtml += '</div>';
-                oHtml += '</div>';
-                $('.row .sideBar').append(oHtml);
+                $('.inbox_chat').append(oHtml);
             });
         }
     });
 }
 
 function refreshMessageList() {
-    var messageId = $('.message-body').last().data('id');
+    var messageId = $('.msg_history').children().last().data('id');
+    if (messageId == undefined) {
+        messageId = 0;
+    }
     // Send ajax request
     $.ajax({
-        url : '/index/messageList/type/after',
+        url : '/index/messageList/type/after/id/' + messageId,
+        type : 'GET',
+        dataType: 'json'
+    }).done(function(oJson, sStatus, oXHR) {
+        if(oJson.success === false) { // If Json return error
+            // Show error message
+            noty({
+                type: 'warning',
+                theme: 'metroui',
+                text: oJson.error.message,
+                timeout: 10000
+            });
+        } else { // If Json return success
+            var addTrigger = false;
+            $.each(oJson.data, function( index, element ) {
+                addTrigger = true;
+                var class2 = 'sent';
+                var oHtml = '<div class="' + element.class + '_msg" data-id="' + element.id + '">';
+                if (element.class == 'incoming') {
+                    oHtml += '<div class="' + element.class + '_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>';
+                    class2 = 'received';
+                }
+                oHtml += '<div class="' + class2 + '_msg">';
+                oHtml += '<div class="' + class2 + '_withd_msg">';
+                oHtml += '<p>' + element.message + '</p>';
+                oHtml += '<span class="time_date">' + element.author + ' à ' + element.date + '</span></div>';
+                oHtml += '</div>';
+                oHtml += '</div>';
+                if (messageId == 0) {
+                    $('.msg_history').prepend(oHtml);
+                } else {
+                    $('.msg_history').append(oHtml);
+                }
+            });
+            var firstMessageId = $('.msg_history').children().first().data('id');
+            if (firstMessageId == 1) {
+                $('.div-previous').hide();
+            } else {
+                $('.div-previous').show();
+            }
+            if (addTrigger == true) {
+                var chatHeight = $('.msg_history')[0].scrollHeight;
+                $('.msg_history').scrollTop(chatHeight);
+            }
+        }
+    });
+}
+
+function getOlderMessage() {
+    var messageId = $('.msg_history').children().first().data('id');
+    // Send ajax request
+    $.ajax({
+        url : '/index/messageList/type/before/id/' + messageId,
         type : 'GET',
         dataType: 'json'
     }).done(function(oJson, sStatus, oXHR) {
@@ -55,19 +115,34 @@ function refreshMessageList() {
             });
         } else { // If Json return success
             $.each(oJson.data, function( index, element ) {
-                var oHtml = '<div class="row message-body" data-id="' + element.id + '">';
-                oHtml += '<div class="col-sm-12 message-main-' + element.class + '">';
-                oHtml += '<div class="' + element.class + '">';
-                oHtml += '<div class="message-text">' + element.message + '</div>';
-                oHtml += '<span class="message-time pull-right">' + element.author + ' à ' + element.date + '</span>';
+                var class2 = 'sent';
+                var oHtml = '<div class="' + element.class + '_msg" data-id="' + element.id + '">';
+                if (element.class == 'incoming') {
+                    oHtml += '<div class="' + element.class + '_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>';
+                    class2 = 'received';
+                }
+                oHtml += '<div class="' + class2 + '_msg">';
+                oHtml += '<div class="' + class2 + '_withd_msg">';
+                oHtml += '<p>' + element.message + '</p>';
+                oHtml += '<span class="time_date">' + element.author + ' à ' + element.date + '</span></div>';
                 oHtml += '</div>';
                 oHtml += '</div>';
-                oHtml += '</div>';
-                $(oHtml).insertBefore('.row .reply');
+                $('.msg_history').prepend(oHtml);
             });
+            var firstMessageId = $('.msg_history').children().first().data('id');
+            if (firstMessageId == 1) {
+                $('.div-previous').hide();
+            } else {
+                $('.div-previous').show();
+            }
+            $('.msg_history').scrollTop(0);
         }
     });
 }
+
+$("#previous-message").click(function() {
+    getOlderMessage();
+});
 
 $("#input-message").click(function() {
     // Open a spinner for wait

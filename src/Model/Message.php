@@ -25,12 +25,12 @@ class Message
 
     public function getLast()
     {
-        $select = "SELECT MSG.msg_content, MSG.msg_date,
+        $select = "SELECT MSG.msg_id, MSG.msg_content, MSG.msg_date,
         MSG.usr_id, USR.usr_login
         FROM t_message MSG
         LEFT JOIN t_user USR ON MSG.usr_id = USR.usr_id
         ORDER BY MSG.msg_date DESC
-        LIMIT 0, 10";
+        LIMIT 0, 5";
         $statement = $this->pdo->prepare($select);
         if ($statement->execute()) {
             $message = $statement->fetchAll();
@@ -41,12 +41,45 @@ class Message
         return false;
     }
 
-    public function post($user_id, $message)
+    public function getAfter($messageId)
+    {
+        $select = "SELECT MSG.msg_id, MSG.msg_content, MSG.msg_date,
+        MSG.usr_id, USR.usr_login
+        FROM t_message MSG
+        LEFT JOIN t_user USR ON MSG.usr_id = USR.usr_id
+        WHERE MSG.msg_id > :message_id
+        ORDER BY MSG.msg_date ASC";
+        $statement = $this->pdo->prepare($select);
+        $statement->bindParam(':message_id', $messageId, \PDO::PARAM_INT);
+        if ($statement->execute()) {
+            return $statement->fetchAll();
+        }
+        return false;
+    }
+
+    public function getBefore($messageId)
+    {
+        $select = "SELECT MSG.msg_id, MSG.msg_content, MSG.msg_date,
+        MSG.usr_id, USR.usr_login
+        FROM t_message MSG
+        LEFT JOIN t_user USR ON MSG.usr_id = USR.usr_id
+        WHERE MSG.msg_id < :message_id
+        ORDER BY MSG.msg_date DESC
+        LIMIT 0, 5";
+        $statement = $this->pdo->prepare($select);
+        $statement->bindParam(':message_id', $messageId, \PDO::PARAM_INT);
+        if ($statement->execute()) {
+            return $statement->fetchAll();
+        }
+        return false;
+    }
+
+    public function post($userId, $message)
     {
         $select = "INSERT INTO t_message(usr_id, msg_content, msg_date)
         VALUES(:user_id, :message, NOW())";
         $statement = $this->pdo->prepare($select);
-        $statement->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+        $statement->bindParam(':user_id', $userId, \PDO::PARAM_INT);
         $statement->bindParam(':message', $message, \PDO::PARAM_STR);
         return $statement->execute();
     }

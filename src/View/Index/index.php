@@ -8,63 +8,43 @@
     <meta name="author" content="Thibault Forax">
     <link rel="icon" href="/img/favicon.ico">
     <title>Kiara - Chat en ligne</title>
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/kiara.css" rel="stylesheet">
     <link href="/css/chat.css" rel="stylesheet">
   </head>
   <body>
-    <div class="container app">
-      <div class="row app-one">
-        <div class="col-sm-4 side">
-          <div class="side-one">
-            <div class="row heading">
-              <div class="col-sm-12 col-xs-12">
-                <?php echo $_SESSION['user']['login']; ?>
-              </div>
+    <div class="container">
+<h3 class=" text-center">Kiara</h3>
+<div class="messaging">
+      <div class="inbox_msg">
+        <div class="inbox_people">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Connecté</h4>
             </div>
-
-            <div class="row sideBar"></div>
           </div>
+          <div class="inbox_chat"></div>
         </div>
-
-        <div class="col-sm-8 conversation">
-          <div class="row heading">
-            <div class="col-sm-1 col-xs-1 heading-dot pull-right">
-              <a href="/login/logout"><i class="fa fa-sign-out fa-2x pull-right" aria-hidden="true"></i></a>
+        <div class="mesgs">
+          <div class="div-previous"><a href="#" id="previous-message">Charger les anciens messages</a></div>
+          <div class="msg_history"></div>
+          <div class="type_msg">
+            <div class="input_msg_write">
+              <input type="text" class="write_msg" placeholder="Type a message" />
+              <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
             </div>
-          </div>
-
-          <div class="row message" id="conversation">
-            <div class="row message-previous">
-              <div class="col-sm-12 previous">
-                <a onclick="previous(this)" id="ankitjain28" name="20">
-                Voir les messages précédents
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="row reply">
-            <form id="form-message">
-                <div class="col-sm-11 col-xs-9 reply-main">
-                  <input type="text" name="message" id="input-message" class="form-control"></textarea>
-                </div>
-                <div class="col-sm-1 col-xs-1 reply-send">
-                  <a href="#"><i class="fa fa-send fa-2x" aria-hidden="true"></i></a>
-                </div>
-            </form>
           </div>
         </div>
       </div>
-    </div>
+    </div></div>
     <div id="spinner-block">
         <svg class="circular" viewBox="25 25 50 50">
             <circle class="path" cx="50" cy="50" r="20"></circle>
         </svg>
     </div>
     <script src="/lib/jquery/js/jquery-3.2.1.min.js"></script>
-    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="/lib/noty/js/jquery.noty.packaged.min.js"></script>
     <script src="/js/kiara.js"></script>
     <script src="/js/chat.js"></script>

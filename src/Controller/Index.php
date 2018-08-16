@@ -64,13 +64,12 @@ class Index
     public function messageList()
     {
         $returnArray = array();
-        $messageId = 0;
-        if (isset($_GET['id'])) {
-            $messageId = $_GET['id'];
-        }
+        $messageId = $_GET['id'];
         $getType = $_GET['type'];
         $messageModel = new Message();
-        if ($getType == 'before') {
+        if ($messageId == 0) {
+            $messageList = $messageModel->getLast();
+        } else if ($getType == 'before') {
             $messageList = $messageModel->getBefore($messageId);
         } else if ($getType == 'after') {
             $messageList = $messageModel->getAfter($messageId);
@@ -87,7 +86,11 @@ class Index
         $index = 0;
         foreach ($messageList as $message) {
             $returnData[$index]['id'] = $message['msg_id'];
-            $returnData[$index]['message'] = nlbr($message['msg_content']);
+            $returnData[$index]['class'] = 'incoming';
+            if ($message['usr_id'] == $_SESSION['user']['id']) {
+                $returnData[$index]['class'] = 'outgoing';
+            }
+            $returnData[$index]['message'] = nl2br($message['msg_content']);
             $returnData[$index]['author'] = $message['usr_login'];
             $returnData[$index]['date'] = $message['msg_date'];
             $index++;
